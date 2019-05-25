@@ -1,0 +1,7 @@
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.3.20")
+addSbtPlugin("io.spray" % "sbt-revolver" % "0.9.1")
+addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.4.3")
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.8")
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.9.2")
+addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.3")
+addSbtPlugin("com.github.gseitz" % "sbt-protobuf" % "0.6.4")
