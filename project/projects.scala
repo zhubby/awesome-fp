@@ -22,4 +22,6 @@ object projects {
   lazy val systemOrder = "system-order"
 
   lazy val systemLiquid = "system-liquid"
+
+  lazy val systemLogs = "system-logs"
 }

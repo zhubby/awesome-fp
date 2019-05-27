@@ -10,9 +10,9 @@ trait AccountTable {
   import slick.jdbc.{GetResult => GR}
   /** Entity class storing rows of table Account
    *  @param userId Database column user_id SqlType(bigserial), AutoInc, PrimaryKey
-   *  @param phone Database column phone SqlType(varchar), Length(11,true)
-   *  @param password Database column password SqlType(varchar), Length(50,true)
-   *  @param nickname Database column nickname SqlType(varchar), Length(255,true)
+   *  @param phone Database column phone SqlType(varchar), Length(11,true), Default()
+   *  @param password Database column password SqlType(varchar), Length(50,true), Default()
+   *  @param nickname Database column nickname SqlType(varchar), Length(255,true), Default()
    *  @param createTime Database column create_time SqlType(int4), Default(0)
    *  @param updateTime Database column update_time SqlType(int4), Default(0)
    *  @param sex Database column sex SqlType(bool), Default(None)
@@ -23,13 +23,13 @@ trait AccountTable {
    *  @param birthday Database column birthday SqlType(date), Default(None)
    *  @param registerIp Database column register_ip SqlType(inet), Length(2147483647,false)
    *  @param registerTime Database column register_time SqlType(int4), Default(0)
-   *  @param updateNum Database column update_num SqlType(int4)
-   *  @param headImg Database column head_img SqlType(varchar), Length(255,true)
+   *  @param updateNum Database column update_num SqlType(int4), Default(0)
+   *  @param headImg Database column head_img SqlType(varchar), Length(255,true), Default()
    *  @param channel Database column channel SqlType(int4), Default(0)
    *  @param inviter Database column inviter SqlType(int4), Default(None)
    *  @param certStatus Database column cert_status SqlType(int4), Default(0)
    *  @param status Database column status SqlType(int4), Default(0) */
-  case class AccountRow(userId: Long, phone: String, password: String, nickname: String, createTime: Int = 0, updateTime: Int = 0, sex: Option[Boolean] = None, lastLoginIp: String, lastLoginTime: Int = 0, loginNum: Int = 0, marry: Option[Boolean] = None, birthday: Option[java.sql.Date] = None, registerIp: String, registerTime: Int = 0, updateNum: Int, headImg: String, channel: Int = 0, inviter: Option[Int] = None, certStatus: Int = 0, status: Int = 0)
+  case class AccountRow(userId: Long, phone: String = "", password: String = "", nickname: String = "", createTime: Int = 0, updateTime: Int = 0, sex: Option[Boolean] = None, lastLoginIp: String, lastLoginTime: Int = 0, loginNum: Int = 0, marry: Option[Boolean] = None, birthday: Option[java.sql.Date] = None, registerIp: String, registerTime: Int = 0, updateNum: Int = 0, headImg: String = "", channel: Int = 0, inviter: Option[Int] = None, certStatus: Int = 0, status: Int = 0)
   /** GetResult implicit for fetching AccountRow objects using plain SQL queries */
   implicit def GetResultAccountRow(implicit e0: GR[Long], e1: GR[String], e2: GR[Int], e3: GR[Option[Boolean]], e4: GR[Option[java.sql.Date]], e5: GR[Option[Int]]): GR[AccountRow] = GR{
     prs => import prs._
@@ -43,12 +43,12 @@ trait AccountTable {
 
     /** Database column user_id SqlType(bigserial), AutoInc, PrimaryKey */
     val userId: Rep[Long] = column[Long]("user_id", O.AutoInc, O.PrimaryKey)
-    /** Database column phone SqlType(varchar), Length(11,true) */
-    val phone: Rep[String] = column[String]("phone", O.Length(11,varying=true))
-    /** Database column password SqlType(varchar), Length(50,true) */
-    val password: Rep[String] = column[String]("password", O.Length(50,varying=true))
-    /** Database column nickname SqlType(varchar), Length(255,true) */
-    val nickname: Rep[String] = column[String]("nickname", O.Length(255,varying=true))
+    /** Database column phone SqlType(varchar), Length(11,true), Default() */
+    val phone: Rep[String] = column[String]("phone", O.Length(11,varying=true), O.Default(""))
+    /** Database column password SqlType(varchar), Length(50,true), Default() */
+    val password: Rep[String] = column[String]("password", O.Length(50,varying=true), O.Default(""))
+    /** Database column nickname SqlType(varchar), Length(255,true), Default() */
+    val nickname: Rep[String] = column[String]("nickname", O.Length(255,varying=true), O.Default(""))
     /** Database column create_time SqlType(int4), Default(0) */
     val createTime: Rep[Int] = column[Int]("create_time", O.Default(0))
     /** Database column update_time SqlType(int4), Default(0) */
@@ -69,10 +69,10 @@ trait AccountTable {
     val registerIp: Rep[String] = column[String]("register_ip", O.Length(2147483647,varying=false))
     /** Database column register_time SqlType(int4), Default(0) */
     val registerTime: Rep[Int] = column[Int]("register_time", O.Default(0))
-    /** Database column update_num SqlType(int4) */
-    val updateNum: Rep[Int] = column[Int]("update_num")
-    /** Database column head_img SqlType(varchar), Length(255,true) */
-    val headImg: Rep[String] = column[String]("head_img", O.Length(255,varying=true))
+    /** Database column update_num SqlType(int4), Default(0) */
+    val updateNum: Rep[Int] = column[Int]("update_num", O.Default(0))
+    /** Database column head_img SqlType(varchar), Length(255,true), Default() */
+    val headImg: Rep[String] = column[String]("head_img", O.Length(255,varying=true), O.Default(""))
     /** Database column channel SqlType(int4), Default(0) */
     val channel: Rep[Int] = column[Int]("channel", O.Default(0))
     /** Database column inviter SqlType(int4), Default(None) */

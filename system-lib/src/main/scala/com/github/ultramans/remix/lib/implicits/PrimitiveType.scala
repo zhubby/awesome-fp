@@ -12,6 +12,8 @@ object PrimitiveType {
 
   private[PrimitiveType] final val COMMA = ","
 
+  implicit val timeFormatPattern = "yyyy-MM-dd HH:mm:ss"
+
   implicit class IntImplicit(i: Int) {
     def toRandomString: String = {
       val random = new Random()
@@ -37,6 +39,8 @@ object PrimitiveType {
   }
 
   implicit class StringImplicit(s: String) {
+
+
     def toMD5: String = {
       val messageDigest = MessageDigest.getInstance("md5")
       messageDigest.update(s.getBytes)
@@ -53,10 +57,14 @@ object PrimitiveType {
       if (s.length == 0) Array[String]() else if (s.endsWith(COMMA)) s.substring(0, s.length - 1).split(COMMA) else s.split(COMMA)
     }
 
-    def timestampToDateFormat: String = {
-      val format = "yyyy-MM-dd HH:mm:ss"
-      val sdf = new SimpleDateFormat(format)
+    def timestampToDateFormat(implicit pattern: String = timeFormatPattern): String = {
+      val sdf = new SimpleDateFormat(pattern)
       sdf.format(new Date(s.concat("000").toLong))
+    }
+
+    def dateFormatToDate(implicit pattern: String = timeFormatPattern): Date = {
+      val sdf = new SimpleDateFormat(pattern)
+      sdf.parse(s)
     }
 
     def dateFormatToTimestamp: String = {
@@ -78,6 +86,8 @@ object PrimitiveType {
     def toTimestamp: Int = (date.getTime / 1000L).toInt
 
     def toTimestampString: String = (date.getTime / 1000L).toString
+
+    def format(implicit pattern: String = timeFormatPattern): String = new SimpleDateFormat(pattern).format(date)
 
     def beforeDay(day: Int): Date = DateTime.now().minus(day).toDate
 
