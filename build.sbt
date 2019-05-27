@@ -1,4 +1,134 @@
+lazy val codegen = taskKey[Unit]("generate database code")
+lazy val codegenClass = "slick.codegen.SourceCodeGenerator"
 val system_lib = (project in file(projects.systemLib))
+  .enablePlugins(ParadoxPlugin)
+  .enablePlugins(ProtobufPlugin)
+  .settings(Seq(
+    organization := projects.org,
+    version := versions.project,
+    scalaVersion := versions.scala
+  ),
+    name := projects.systemLib,
+    libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "2.5.0",
+    libraryDependencies += "com.typesafe" % "config" % "1.3.2",
+    libraryDependencies += "com.typesafe.akka" %% "akka-stream-kafka" % "0.22",
+    libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3",
+    libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0",
+    libraryDependencies += "com.chuusai" %% "shapeless" % "2.3.3",
+    libraryDependencies += "org.json4s" %% "json4s-native" % "3.6.2",
+    libraryDependencies += "org.postgresql" % "postgresql" % "42.2.5",
+    libraryDependencies ++= Seq(
+      "com.typesafe.slick" %% "slick" % versions.slick,
+      "com.typesafe.slick" %% "slick-hikaricp" % versions.slick,
+      "com.typesafe.slick" %% "slick-testkit" % versions.slick % "test",
+      "com.typesafe.slick" %% "slick-codegen" % versions.slick
+    ),
+    libraryDependencies += "org.elasticsearch.client" % "elasticsearch-rest-high-level-client" % "5.6.8",
+    libraryDependencies += "javax.mail" % "mail" % "1.4.7",
+    libraryDependencies += "com.google.guava" % "guava" % "23.0",
+    libraryDependencies += "joda-time" % "joda-time" % "2.9.9",
+    libraryDependencies += "org.joda" % "joda-convert" % "2.1.1",
+    libraryDependencies += "com.google.inject" % "guice" % "3.0",
+    libraryDependencies += "com.auth0" % "java-jwt" % "3.4.0",
+    libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.25",
+    libraryDependencies ++= Seq(
+      "org.apache.hbase" % "hbase-client" % "1.4.7",
+      "org.apache.hive" % "hive-exec" % "3.1.0",
+      "org.apache.zookeeper" % "zookeeper" % "3.4.6" pomOnly()
+    ).map(_.excludeAll(ExclusionRule(organization = "org.slf4j"))).map(_.excludeAll(ExclusionRule(organization = "org.apache.logging.log4j"))),
+    libraryDependencies ++= Seq(
+      "com.typesafe.akka" %% "akka-http" % versions.akkaHttp,
+      "com.typesafe.akka" %% "akka-http-spray-json" % versions.akkaHttp,
+      "com.typesafe.akka" %% "akka-http-xml" % versions.akkaHttp,
+      "com.typesafe.akka" %% "akka-http-testkit" % versions.akkaHttp % Test,
+    ),
+    libraryDependencies ++= Seq(
+      "com.typesafe.akka" %% "akka-stream" % versions.akka,
+      "com.typesafe.akka" %% "akka-persistence" % versions.akka,
+      "com.typesafe.akka" %% "akka-testkit" % versions.akka % Test,
+      "com.typesafe.akka" %% "akka-stream-testkit" % versions.akka % Test
+    ),
+    libraryDependencies += "com.alipay.sdk" % "alipay-sdk-java" % "3.4.49.ALL",
+    libraryDependencies += "com.github.finagle" %% "finch-json4s" % "0.23.0",
+    libraryDependencies += "com.twitter" %% "util-collection" % "18.11.0",
+    libraryDependencies += "io.lettuce" % "lettuce-core" % "5.1.6.RELEASE",
+    libraryDependencies += "org.typelevel" %% "cats-core" % "1.4.0",
+    libraryDependencies += "com.rabbitmq" % "amqp-client" % "5.5.2",
+    libraryDependencies += "org.scalaz.stream" %% "scalaz-stream" % "0.8.6",
+    libraryDependencies ++= Seq(
+      "org.scalaz" %% "scalaz-core" % versions.scalaz,
+      "org.scalaz" %% "scalaz-effect" % versions.scalaz,
+      "org.scalaz" %% "scalaz-concurrent" % versions.scalaz,
+      "org.scalaz" %% "scalaz-scalacheck-binding" % "7.2.26-scalacheck-1.14" % Test
+    ),
+    libraryDependencies += "org.quartz-scheduler" % "quartz" % "2.3.0",
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % Test,
+    libraryDependencies += "io.etcd" % "jetcd-core" % "0.3.0",
+    
+  )
+val system_estate = (project in file(projects.systemEstate)).settings(
+  Seq(
+  organization := projects.org,
+  version := versions.project,
+  scalaVersion := versions.scala
+),
+  name := projects.systemEstate,
+  libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "2.5.0",
+  libraryDependencies += "com.typesafe" % "config" % "1.3.2",
+  libraryDependencies += "com.typesafe.akka" %% "akka-stream-kafka" % "0.22",
+  libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3",
+  libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0",
+  libraryDependencies += "com.chuusai" %% "shapeless" % "2.3.3",
+  libraryDependencies += "org.json4s" %% "json4s-native" % "3.6.2",
+  libraryDependencies += "org.postgresql" % "postgresql" % "42.2.5",
+  libraryDependencies ++= Seq(
+    "com.typesafe.slick" %% "slick" % versions.slick,
+    "com.typesafe.slick" %% "slick-hikaricp" % versions.slick,
+    "com.typesafe.slick" %% "slick-testkit" % versions.slick % "test",
+    "com.typesafe.slick" %% "slick-codegen" % versions.slick
+  ),
+  libraryDependencies += "org.elasticsearch.client" % "elasticsearch-rest-high-level-client" % "5.6.8",
+  libraryDependencies += "javax.mail" % "mail" % "1.4.7",
+  libraryDependencies += "com.google.guava" % "guava" % "23.0",
+  libraryDependencies += "joda-time" % "joda-time" % "2.9.9",
+  libraryDependencies += "org.joda" % "joda-convert" % "2.1.1",
+  libraryDependencies += "com.google.inject" % "guice" % "3.0",
+  libraryDependencies += "com.auth0" % "java-jwt" % "3.4.0",
+  libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.25",
+  libraryDependencies ++= Seq(
+    "org.apache.hbase" % "hbase-client" % "1.4.7",
+    "org.apache.hive" % "hive-exec" % "3.1.0",
+    "org.apache.zookeeper" % "zookeeper" % "3.4.6" pomOnly()
+  ).map(_.excludeAll(ExclusionRule(organization = "org.slf4j"))).map(_.excludeAll(ExclusionRule(organization = "org.apache.logging.log4j"))),
+  libraryDependencies ++= Seq(
+    "com.typesafe.akka" %% "akka-http" % versions.akkaHttp,
+    "com.typesafe.akka" %% "akka-http-spray-json" % versions.akkaHttp,
+    "com.typesafe.akka" %% "akka-http-xml" % versions.akkaHttp,
+    "com.typesafe.akka" %% "akka-http-testkit" % versions.akkaHttp % Test,
+  ),
+  libraryDependencies ++= Seq(
+    "com.typesafe.akka" %% "akka-stream" % versions.akka,
+    "com.typesafe.akka" %% "akka-persistence" % versions.akka,
+    "com.typesafe.akka" %% "akka-testkit" % versions.akka % Test,
+    "com.typesafe.akka" %% "akka-stream-testkit" % versions.akka % Test
+  ),
+  libraryDependencies += "com.alipay.sdk" % "alipay-sdk-java" % "3.4.49.ALL",
+  libraryDependencies += "com.github.finagle" %% "finch-json4s" % "0.23.0",
+  libraryDependencies += "com.twitter" %% "util-collection" % "18.11.0",
+  libraryDependencies += "io.lettuce" % "lettuce-core" % "5.1.6.RELEASE",
+  libraryDependencies += "org.typelevel" %% "cats-core" % "1.4.0",
+  libraryDependencies += "com.rabbitmq" % "amqp-client" % "5.5.2",
+  libraryDependencies += "org.scalaz.stream" %% "scalaz-stream" % "0.8.6",
+  libraryDependencies ++= Seq(
+    "org.scalaz" %% "scalaz-core" % versions.scalaz,
+    "org.scalaz" %% "scalaz-effect" % versions.scalaz,
+    "org.scalaz" %% "scalaz-concurrent" % versions.scalaz,
+    "org.scalaz" %% "scalaz-scalacheck-binding" % "7.2.26-scalacheck-1.14" % Test
+  ),
+  libraryDependencies += "org.quartz-scheduler" % "quartz" % "2.3.0",
+).dependsOn(system_lib)
+
+val system_agency = (project in file(projects.systemAgency))
   .enablePlugins(ParadoxPlugin)
   .enablePlugins(ProtobufPlugin)
   .enablePlugins(JavaAppPackaging, DockerPlugin)
@@ -8,7 +138,7 @@ val system_lib = (project in file(projects.systemLib))
       version := versions.project,
       scalaVersion := versions.scala
     ),
-    name := projects.systemLib,
+    name := projects.systemAgency,
     libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "2.5.0",
     libraryDependencies += "com.typesafe" % "config" % "1.3.2",
     libraryDependencies += "com.typesafe.akka" %% "akka-stream-kafka" % "0.22",
@@ -64,12 +194,35 @@ val system_lib = (project in file(projects.systemLib))
     libraryDependencies += "org.quartz-scheduler" % "quartz" % "2.3.0",
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % Test
   )
-val estate = (project in file("system-estate"))
-val agency = (project in file("system-agency"))
-val analysis = (project in file("system-analysis"))
-val liquid = (project in file("system-liquid"))
-val order = (project in file("system-order"))
-val push = (project in file("system-push"))
+
+val system_analysis = (project in file(projects.systemAnalysis)).settings(Seq(
+  organization := projects.org,
+  version := versions.project,
+  scalaVersion := versions.scala
+),
+  name := projects.systemAnalysis
+)
+val system_liquid = (project in file(projects.systemLiquid)).settings(Seq(
+  organization := projects.org,
+  version := versions.project,
+  scalaVersion := versions.scala
+),
+  name := projects.systemLiquid
+)
+val system_order = (project in file(projects.systemOrder)).settings(Seq(
+  organization := projects.org,
+  version := versions.project,
+  scalaVersion := versions.scala
+),
+  name := projects.systemOrder
+)
+val system_push = (project in file(projects.systemPush)).settings(Seq(
+  organization := projects.org,
+  version := versions.project,
+  scalaVersion := versions.scala
+),
+  name := projects.systemPush
+)
 
 lazy val system_account = (project in file(projects.systemAccount))
   .enablePlugins(ParadoxPlugin)
@@ -135,28 +288,43 @@ lazy val system_account = (project in file(projects.systemAccount))
       "org.scalaz" %% "scalaz-scalacheck-binding" % "7.2.26-scalacheck-1.14" % Test
     ),
     libraryDependencies += "org.quartz-scheduler" % "quartz" % "2.3.0",
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % Test
-  ).settings(codegenTaskName := codegenTask.value).dependsOn(system_lib)
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % Test,
+    codegen := Def.task {
+      val (dir, cp, r, s) = (sourceManaged.value, (dependencyClasspath in Compile).value, (runner in Compile).value, streams.value)
+      r.run(codegenClass, cp.files, Array("slick.jdbc.PostgresProfile", "org.postgresql.Driver", "jdbc:postgresql://120.26.57.78:5432/system_account", s"${projects.systemAccount}/src/main/scala", s"${projects.org}.account.models.codegen", "postgres", "zhuyan", "true", codegenClass, "true"), s.log)
+    }.value
+  ).dependsOn(system_lib)
 
 
-val track = (project in file("system-track"))
-val task = (project in file("system-task"))
+val system_track = (project in file(projects.systemTrack))
+  .settings(Seq(
+    organization := projects.org,
+    version := versions.project,
+    scalaVersion := versions.scala
+  ),
+    name := projects.systemTrack
+  )
+val sampleIntTask = taskKey[Int]("A sample int task.")
 
+val system_task = (project in file(projects.systemTask)).settings(Seq(
+  organization := projects.org,
+  version := versions.project,
+  scalaVersion := versions.scala
+),
+  name := projects.systemTask,
+  sampleIntTask := {
+    val sum = 1 + 3
+    println("sum: " + sum)
+    sum
+  }
+)
 
-val sourceFolder = "src/main/scala"
-val codeGenerateClass = "slick.codegen.SourceCodeGenerator"
-
-val codegenTaskName = TaskKey[Seq[File]]("generateTablesCode")
-val codegenTask = Def.task {
-  val (dir, cp, r, s) = (sourceManaged.value, (dependencyClasspath in Compile).value, (runner in Compile).value, streams.value)
-  val packagePath = "com.github.ultramans.remix.account.models.tables"
-  r.run(codeGenerateClass, cp.files, Array("slick.jdbc.PostgresProfile", "org.postgresql.Driver", "jdbc:postgresql://120.26.57.78:5432/system_account", sourceFolder, packagePath, "postgres", "zhuyan", "true", codeGenerateClass, "true"), s.log)
-  Seq(file(s"{$sourceFolder}/${packagePath.replace(".", "/")}/Tables.scala"))
-}
-
-test in assembly := {}
-assemblyJarName in assembly := "system-account-assembly-1.0.0.jar"
-assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", s@_*) => MergeStrategy.discard
-  case _ => MergeStrategy.last
-}
+lazy val remix = (project in file(".")).settings(
+  name := "remix",
+  sampleIntTask := {
+    val sum = 1 + 2
+    println("sum: " + sum)
+    sum
+  },
+  codegen := Def.task {}.value
+)

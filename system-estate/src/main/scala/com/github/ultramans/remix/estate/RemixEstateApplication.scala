@@ -1,18 +1,17 @@
-package com.github.ultramans.remix.account
+package com.github.ultramans.remix.estate
 
 import java.nio.file.Paths
+
 import akka.Done
 import akka.actor.CoordinatedShutdown
 import akka.http.scaladsl.Http
-import akka.stream.scaladsl._
+import akka.stream.scaladsl.{FileIO, Sink}
 import akka.util.ByteString
-import com.typesafe.scalalogging.Logger
 import com.typesafe.config.ConfigFactory
+import com.typesafe.scalalogging.Logger
 
-object RemixAccountApplication {
-
+object RemixEstateApplication {
   import ApplicationSystem._
-
   private val banner = FileIO.fromPath(Paths.get("system-account/src/main/resources/banner.txt")).runWith(Sink.reduce[ByteString](_
     concat _)).map(_.utf8String)
   private val configLoader = ConfigFactory.load()
