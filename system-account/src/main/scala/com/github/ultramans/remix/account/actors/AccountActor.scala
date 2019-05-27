@@ -1,7 +1,6 @@
 package com.github.ultramans.remix.account.actors
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import com.github.ultramans.remix.account.ApplicationSystem.system
 import com.google.common.base.CaseFormat
 import com.github.ultramans.remix.account.ApplicationSystem._
 
