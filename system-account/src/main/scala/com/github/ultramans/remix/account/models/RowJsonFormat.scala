@@ -8,7 +8,7 @@ import spray.json._
 
 object RowJsonFormat extends DefaultJsonProtocol with ExtJsonFormat with SprayJsonSupport {
 
-  object AccountRowJsonFormat extends RootJsonFormat[AccountRow] with SprayJsonSupport{
+  object AccountRowJsonFormat extends RootJsonFormat[AccountRow] {
     override def write(row: AccountRow): JsValue = jsonFormat20(AccountRow).write(row)
 
     override def read(value: JsValue): AccountRow = {

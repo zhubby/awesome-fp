@@ -16,12 +16,12 @@ trait AccountTable {
    *  @param createTime Database column create_time SqlType(int4), Default(0)
    *  @param updateTime Database column update_time SqlType(int4), Default(0)
    *  @param sex Database column sex SqlType(bool), Default(None)
-   *  @param lastLoginIp Database column last_login_ip SqlType(inet), Length(2147483647,false)
+   *  @param lastLoginIp Database column last_login_ip SqlType(varchar), Length(50,true)
    *  @param lastLoginTime Database column last_login_time SqlType(int4), Default(0)
    *  @param loginNum Database column login_num SqlType(int4), Default(0)
    *  @param marry Database column marry SqlType(bool), Default(None)
    *  @param birthday Database column birthday SqlType(date), Default(None)
-   *  @param registerIp Database column register_ip SqlType(inet), Length(2147483647,false)
+   *  @param registerIp Database column register_ip SqlType(varchar), Length(50,true)
    *  @param registerTime Database column register_time SqlType(int4), Default(0)
    *  @param updateNum Database column update_num SqlType(int4), Default(0)
    *  @param headImg Database column head_img SqlType(varchar), Length(255,true), Default()
@@ -55,8 +55,8 @@ trait AccountTable {
     val updateTime: Rep[Int] = column[Int]("update_time", O.Default(0))
     /** Database column sex SqlType(bool), Default(None) */
     val sex: Rep[Option[Boolean]] = column[Option[Boolean]]("sex", O.Default(None))
-    /** Database column last_login_ip SqlType(inet), Length(2147483647,false) */
-    val lastLoginIp: Rep[String] = column[String]("last_login_ip", O.Length(2147483647,varying=false))
+    /** Database column last_login_ip SqlType(varchar), Length(50,true) */
+    val lastLoginIp: Rep[String] = column[String]("last_login_ip", O.Length(50,varying=true))
     /** Database column last_login_time SqlType(int4), Default(0) */
     val lastLoginTime: Rep[Int] = column[Int]("last_login_time", O.Default(0))
     /** Database column login_num SqlType(int4), Default(0) */
@@ -65,8 +65,8 @@ trait AccountTable {
     val marry: Rep[Option[Boolean]] = column[Option[Boolean]]("marry", O.Default(None))
     /** Database column birthday SqlType(date), Default(None) */
     val birthday: Rep[Option[java.sql.Date]] = column[Option[java.sql.Date]]("birthday", O.Default(None))
-    /** Database column register_ip SqlType(inet), Length(2147483647,false) */
-    val registerIp: Rep[String] = column[String]("register_ip", O.Length(2147483647,varying=false))
+    /** Database column register_ip SqlType(varchar), Length(50,true) */
+    val registerIp: Rep[String] = column[String]("register_ip", O.Length(50,varying=true))
     /** Database column register_time SqlType(int4), Default(0) */
     val registerTime: Rep[Int] = column[Int]("register_time", O.Default(0))
     /** Database column update_num SqlType(int4), Default(0) */
