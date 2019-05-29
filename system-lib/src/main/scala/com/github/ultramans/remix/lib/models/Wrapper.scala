@@ -8,7 +8,7 @@ import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
 final case class Wrapper[+T](message: String, code: Int, data: T)
 
 object Wrapper extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit def bundleFormat[A: JsonFormat]: RootJsonFormat[Wrapper[A]] = jsonFormat3(Wrapper.apply[A])
+  implicit def wrapperFormat[A: JsonFormat]: RootJsonFormat[Wrapper[A]] = jsonFormat3(Wrapper.apply[A])
 
   def ok[A](s: A): Wrapper[A] = this (StatusCodes.OK.defaultMessage, StatusCodes.OK.intValue, s)
 

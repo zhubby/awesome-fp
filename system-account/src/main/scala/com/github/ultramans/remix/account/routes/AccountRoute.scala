@@ -50,7 +50,6 @@ object AccountRoute extends SprayJsonSupport {
               }
             }
           )
-
         }
       )
     }
